@@ -52,6 +52,11 @@ if errorlevel 1 (
         echo 🔨 Building image locally (Internet required)...
         echo This may take 5-10 minutes...
         docker build -t n8n-custom:latest .
+        if errorlevel 1 (
+            echo ❌ Build failed! Please check your internet connection.
+            pause
+            exit /b
+        )
     )
 ) else (
     echo ✅ Image exists.

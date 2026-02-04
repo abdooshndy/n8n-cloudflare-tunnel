@@ -131,55 +131,14 @@ N8N_PASSWORD=your_very_strong_password_here
 TIMEZONE=Africa/Cairo
 ```
 
-#### الخطوة 2أ: استخدام Quick Tunnel (بدون domain)
+#### الخطوة 2: تشغيل الخدمة
 
 ```bash
-# ببساطة شغّل:
-docker-compose --profile quick-tunnel up -d
+# تشغيل الحاوية الموحدة
+docker-compose up -d
 
-# اعرض السجلات للحصول على الرابط:
-docker-compose logs cloudflared-quick-tunnel
-```
-
-**ابحث عن سطر مثل:**
-```
-https://random-abc-xyz.trycloudflare.com
-```
-
-هذا هو رابطك! استخدمه للوصول إلى n8n.
-
-#### الخطوة 2ب: استخدام Named Tunnel (مع domain)
-
-**أولاً: إعداد Cloudflare Tunnel**
-
-1. سجل الدخول إلى [Cloudflare Dashboard](https://dash.cloudflare.com)
-2. انتقل إلى: **Zero Trust** → **Networks** → **Tunnels**
-3. انقر على **Create a tunnel**
-4. اختر **Cloudflared** ثم **Next**
-5. أدخل اسماً للنفق (مثل: `n8n-tunnel`)
-6. **انسخ التوكن** الذي يبدأ بـ `eyJ...`
-7. في قسم **Public Hostname**:
-   - **Subdomain**: `n8n`
-   - **Domain**: اختر نطاقك
-   - **Service Type**: `HTTP`
-   - **URL**: `n8n:5678`
-8. **Save tunnel**
-
-**ثانياً: عدّل `.env`**
-
-```env
-# أضف التوكن:
-CLOUDFLARE_TUNNEL_TOKEN=eyJhIjoixxxxxxxxxxxxxxxx...
-
-# غيّر النطاق:
-N8N_HOST=n8n.yourdomain.com
-WEBHOOK_URL=https://n8n.yourdomain.com
-```
-
-**ثالثاً: شغّل الخدمات**
-
-```bash
-docker-compose --profile named-tunnel up -d
+# عرض الرابط (Quick Tunnel)
+docker-compose logs n8n | grep "https://"
 ```
 
 ---
@@ -188,34 +147,18 @@ docker-compose --profile named-tunnel up -d
 
 ### إدارة الخدمات
 
-#### Quick Tunnel:
 ```bash
 # تشغيل
-docker-compose --profile quick-tunnel up -d
+docker-compose up -d
 
 # إيقاف
-docker-compose --profile quick-tunnel down
+docker-compose down
 
 # السجلات
-docker-compose logs cloudflared-quick-tunnel
+docker-compose logs n8n
 
-# الحالة
-docker-compose ps
-
-# عرض الرابط
-docker-compose logs cloudflared-quick-tunnel | grep "https://"
-```
-
-#### Named Tunnel:
-```bash
-# تشغيل
-docker-compose --profile named-tunnel up -d
-
-# إيقاف
-docker-compose --profile named-tunnel down
-
-# السجلات
-docker-compose logs cloudflared-named-tunnel
+# عرض الرابط (Quick Tunnel)
+docker-compose logs n8n | grep "https://"
 
 # الحالة
 docker-compose ps
@@ -224,12 +167,12 @@ docker-compose ps
 ### الصيانة
 
 ```bash
-# تحديث n8n لأحدث إصدار
-docker-compose pull
-docker-compose --profile [quick-tunnel/named-tunnel] up -d
+# إعادة بناء الصورة (في حال تحديث الكود)
+docker-compose build
+docker-compose up -d
 
 # إعادة التشغيل
-docker-compose --profile [quick-tunnel/named-tunnel] restart
+docker-compose restart
 ```
 
 ---
@@ -256,7 +199,7 @@ docker-compose down
 tar -xzf n8n-backup-YYYYMMDD.tar.gz
 
 # تشغيل الخدمات
-docker-compose --profile [quick-tunnel/named-tunnel] up -d
+docker-compose up -d
 ```
 
 ---
@@ -330,7 +273,7 @@ cat .env
 ### الطريقة 2: من السجلات مباشرة
 
 ```bash
-docker-compose logs cloudflared-quick-tunnel | grep "https://"
+docker-compose logs n8n | grep "https://"
 ```
 
 **مثال على النتيجة:**
@@ -343,18 +286,8 @@ https://random-name-abc.trycloudflare.com
 ### الطريقة 3: مشاهدة السجلات الحية
 
 ```bash
-docker-compose logs -f cloudflared-quick-tunnel
+docker-compose logs -f n8n
 ```
-
-ابحث عن سطر مثل:
-```
-INF +--------------------------------------------------------------------------------------------+
-INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
-INF |  https://abc-xyz-123.trycloudflare.com                                                     |
-INF +--------------------------------------------------------------------------------------------+
-```
-
-اضغط `Ctrl+C` للخروج
 
 ---
 
@@ -362,10 +295,10 @@ INF +---------------------------------------------------------------------------
 
 ```bash
 # Linux/macOS
-docker-compose logs cloudflared-quick-tunnel 2>&1 | grep -o 'https://[a-zA-Z0-9.-]*\.trycloudflare\.com' | tail -1
+docker-compose logs n8n 2>&1 | grep -o 'https://[a-zA-Z0-9.-]*\.trycloudflare\.com' | tail -1
 
 # Windows (PowerShell)
-docker-compose logs cloudflared-quick-tunnel 2>&1 | Select-String -Pattern 'https://[a-zA-Z0-9.-]*\.trycloudflare\.com' | Select-Object -Last 1
+docker-compose logs n8n 2>&1 | Select-String -Pattern 'https://[a-zA-Z0-9.-]*\.trycloudflare\.com' | Select-Object -Last 1
 ```
 
 ---
@@ -411,11 +344,7 @@ docker-compose logs cloudflared-quick-tunnel 2>&1 | Select-String -Pattern 'http
 2. **تأكد من تثبيت Docker** على النظام الجديد
 3. **شغّل الخدمات**:
    ```bash
-   # Quick Tunnel
-   docker-compose --profile quick-tunnel up -d
-   
-   # Named Tunnel
-   docker-compose --profile named-tunnel up -d
+   docker-compose up -d
    ```
 
 ---
