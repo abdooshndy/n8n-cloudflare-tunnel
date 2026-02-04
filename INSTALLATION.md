@@ -59,7 +59,8 @@ cd n8n-cloudflare-tunnel-*
 ```powershell
 # 1. فك الضغط (Right Click -> Extract All)
 # 2. افتح n8n-Installer.bat
-# 3. اتبع التعليمات في المتصفح!
+# 3. حمّل الإعدادات (.env)
+# 4. شغّل Start-n8n.bat
 ```
 
 ---
