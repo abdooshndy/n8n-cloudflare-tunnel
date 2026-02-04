@@ -2,8 +2,9 @@ version: '3.8'
 
 services:
   n8n:
-    image: n8nio/n8n:latest
-    container_name: n8n
+    build: .
+    image: n8n-custom:latest
+    container_name: n8n-bundled
     restart: unless-stopped
     environment:
       # Basic Configuration
@@ -11,63 +12,26 @@ services:
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - WEBHOOK_URL=${WEBHOOK_URL}
+      - NODE_ENV=production
 
       # Security
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=${N8N_USER}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
 
+      # Tunnel Configuration
+      - CLOUDFLARE_TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+
       # Timezone
       - GENERIC_TIMEZONE=${TIMEZONE:-Africa/Cairo}
       - TZ=${TIMEZONE:-Africa/Cairo}
 
-      # Execution Settings
-      - EXECUTIONS_PROCESS=main
-      - EXECUTIONS_MODE=regular
-
-      # Editor URL (for webhooks and frontend)
-      - N8N_EDITOR_BASE_URL=${WEBHOOK_URL}
     ports:
-      - "127.0.0.1:5678:5678" # Only expose locally
+      - "127.0.0.1:5678:5678"
     volumes:
       - ./n8n-data:/home/node/.n8n
-    networks:
-      - n8n-network
     healthcheck:
       test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:5678/healthz || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
-
-  # استخدم cloudflared-quick للوضع المجاني بدون domain
-  # Use cloudflared-quick for free mode without domain
-  cloudflared-quick:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared-quick-tunnel
-    restart: unless-stopped
-    command: tunnel --no-autoupdate --url http://n8n:5678
-    networks:
-      - n8n-network
-    depends_on:
-      - n8n
-    profiles:
-      - quick-tunnel
-
-  # استخدم cloudflared-named إذا كان لديك domain وتوكن
-  # Use cloudflared-named if you have a domain and token
-  cloudflared-named:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared-named-tunnel
-    restart: unless-stopped
-    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
-    networks:
-      - n8n-network
-    depends_on:
-      - n8n
-    profiles:
-      - named-tunnel
-
-networks:
-  n8n-network:
-    driver: bridge

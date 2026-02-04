@@ -1,46 +1,40 @@
 #!/bin/bash
 
 # ==================================================
-# حفظ صور Docker كملف tar
-# Save Docker images as tar file
+# حفظ صورة Docker المدمجة
+# Save Bundled Docker Image
 # ==================================================
 
 echo "=============================================="
-echo "حفظ صور Docker"
-echo "Saving Docker Images"
+echo "حفظ صورة Docker المدمجة"
+echo "Saving Bundled Docker Image"
 echo "=============================================="
 echo ""
 
-# التحقق من وجود الصور محلياً
-echo "🔍 Checking if images exist..."
-if ! docker image inspect n8nio/n8n:latest &> /dev/null; then
-    echo "⬇️  Pulling n8n image..."
-    docker pull n8nio/n8n:latest
+# 1. Build the image first
+echo "🔨 Building image..."
+docker build -t n8n-custom:latest .
+
+if [ $? -ne 0 ]; then
+    echo "❌ Build failed!"
+    exit 1
 fi
 
-if ! docker image inspect cloudflare/cloudflared:latest &> /dev/null; then
-    echo "⬇️  Pulling cloudflared image..."
-    docker pull cloudflare/cloudflared:latest
-fi
-
+echo "✅ Build successful!"
 echo ""
-echo "📦 Saving images to file..."
+
+# 2. Save the image
+echo "📦 Saving image to n8n-images.tar.gz..."
 echo "This may take a few minutes..."
-echo ""
 
-docker save n8nio/n8n:latest cloudflare/cloudflared:latest | gzip > n8n-images.tar.gz
-
-SIZE=$(du -h n8n-images.tar.gz | cut -f1)
+docker save n8n-custom:latest | gzip > n8n-images.tar.gz
 
 echo ""
 echo "=============================================="
-echo "✅ Images saved successfully!"
-echo "✅ تم حفظ الصور بنجاح!"
+echo "✅ Image saved successfully!"
+echo "✅ تم حفظ الصورة بنجاح!"
 echo "=============================================="
 echo ""
 echo "📄 File: n8n-images.tar.gz"
-echo "📊 Size: $SIZE"
-echo ""
-echo "Now you can distribute this file!"
-echo "الآن يمكنك توزيع هذا الملف!"
+du -h n8n-images.tar.gz
 echo ""
