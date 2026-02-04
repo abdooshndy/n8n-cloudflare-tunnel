@@ -13,6 +13,9 @@ echo Opening configuration page in browser...
 echo جاري فتح صفحة الإعداد في المتصفح...
 echo.
 
+REM تغيير مسار العمل إلى مجلد السكريبت
+cd /d "%~dp0"
+
 REM فتح ملف HTML في المتصفح الافتراضي
 start "" "setup.html"
 
