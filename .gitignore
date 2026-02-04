@@ -1,0 +1,22 @@
+# Environment variables (contains sensitive data)
+.env
+
+# Sensitive Data
+n8n-data/
+cloudflare/config.yml
+
+# Large Files & Distribution
+*.tar.gz
+*.tar
+n8n-images.*
+
+# System files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/

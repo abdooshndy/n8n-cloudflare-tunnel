@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n Easy Setup | إعداد n8n</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+            background: #f5f7ff;
+        }
+
+        .radio-option.selected {
+            border-color: #667eea;
+            background: #f5f7ff;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-left: 10px;
+        }
+
+        .advanced {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .output {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .output.show {
+            display: block;
+        }
+
+        .output pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 13px;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .steps {
+            margin-top: 20px;
+        }
+
+        .step {
+            padding: 15px;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .step-num {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🚀 n8n Easy Setup</h1>
+        <p class="subtitle">إعداد سريع وسهل | Quick & Easy Configuration</p>
+
+        <div id="form-section">
+            <div class="form-group">
+                <label>👤 Username (اسم المستخدم)</label>
+                <input type="text" id="username" value="admin" placeholder="admin">
+            </div>
+
+            <div class="form-group">
+                <label>🔒 Password (كلمة المرور)</label>
+                <input type="password" id="password" placeholder="أدخل كلمة مرور قوية">
+            </div>
+
+            <div class="form-group">
+                <label>🌍 Timezone (المنطقة الزمنية)</label>
+                <select id="timezone">
+                    <option value="Africa/Cairo">Africa/Cairo (مصر)</option>
+                    <option value="Asia/Riyadh">Asia/Riyadh (السعودية)</option>
+                    <option value="Asia/Dubai">Asia/Dubai (الإمارات)</option>
+                    <option value="Asia/Kuwait">Asia/Kuwait (الكويت)</option>
+                    <option value="Asia/Baghdad">Asia/Baghdad (العراق)</option>
+                    <option value="Europe/Istanbul">Europe/Istanbul (تركيا)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>🔗 Tunnel Type (نوع الاتصال)</label>
+                <div class="radio-group">
+                    <div class="radio-option selected" onclick="selectTunnel('quick')">
+                        <input type="radio" name="tunnel" value="quick" checked>
+                        <strong>Quick Tunnel</strong><br>
+                        <small>مجاني - بدون domain</small>
+                    </div>
+                    <div class="radio-option" onclick="selectTunnel('named')">
+                        <input type="radio" name="tunnel" value="named">
+                        <strong>Named Tunnel</strong><br>
+                        <small>مع domain خاص</small>
+                    </div>
+                </div>
+            </div>
+
+            <div id="advanced-section" class="advanced">
+                <div class="form-group">
+                    <label>🔑 Cloudflare Token</label>
+                    <input type="text" id="cf-token" placeholder="eyJhIjoixxxxxx...">
+                </div>
+                <div class="form-group">
+                    <label>🌐 Domain</label>
+                    <input type="text" id="domain" placeholder="n8n.yourdomain.com">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="generateConfig()">
+                ✅ Generate Configuration | توليد الإعدادات
+            </button>
+        </div>
+
+        <div id="output-section" class="output">
+            <div class="alert alert-success">
+                ✅ تم توليد ملف الإعدادات بنجاح!
+            </div>
+
+            <div class="alert alert-info">
+                <strong>🚀 الطريقة السريعة (موصى بها):</strong><br>
+                1. اضغط "Download .env" أدناه<br>
+                2. اضغط "Download Starter" أدناه<br>
+                3. شغّل ملف start-n8n.bat الذي تم تحميله
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="downloadEnv()" style="flex: 1;">
+                    📥 Download .env File
+                </button>
+                <button class="btn btn-primary" onclick="downloadStarter()" style="flex: 1;">
+                    🚀 Download Starter Script
+                </button>
+            </div>
+
+            <hr style="margin: 20px 0;">
+
+            <div class="steps">
+                <div class="step">
+                    <span class="step-num">1</span>
+                    <strong>أو انسخ المحتوى أدناه يدوياً</strong>
+                </div>
+                <div class="step">
+                    <span class="step-num">2</span>
+                    <strong>افتح Notepad وألصق المحتوى</strong>
+                </div>
+                <div class="step">
+                    <span class="step-num">3</span>
+                    <strong>احفظ الملف باسم <code>.env</code> في نفس المجلد</strong>
+                </div>
+                <div class="step">
+                    <span class="step-num">4</span>
+                    <strong>شغّل الأوامر أدناه في PowerShell</strong>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 20px; margin-bottom: 10px;">📄 محتوى ملف .env</h3>
+            <pre id="env-content"></pre>
+
+            <h3 style="margin-top: 20px; margin-bottom: 10px;">💻 الأوامر المطلوبة</h3>
+            <pre id="commands"></pre>
+
+            <button class="btn btn-primary" onclick="copyToClipboard('env-content')">
+                📋 Copy .env Content
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function selectTunnel(type) {
+            const options = document.querySelectorAll('.radio-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            const advanced = document.getElementById('advanced-section');
+            if (type === 'named') {
+                advanced.style.display = 'block';
+            } else {
+                advanced.style.display = 'none';
+            }
+        }
+
+        function generateConfig() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const timezone = document.getElementById('timezone').value;
+            const tunnelType = document.querySelector('input[name="tunnel"]:checked').value;
+
+            if (!password) {
+                alert('⚠️ Please enter a password! | يرجى إدخال كلمة المرور!');
+                return;
+            }
+
+            let envContent = `# Generated by n8n Easy Setup\n`;
+            envContent += `N8N_USER=${username}\n`;
+            envContent += `N8N_PASSWORD=${password}\n`;
+            envContent += `TIMEZONE=${timezone}\n\n`;
+
+            let commands = `# 1. Download Docker images (first time only)\n`;
+            commands += `.\\download-images.ps1\n\n`;
+
+            if (tunnelType === 'quick') {
+                envContent += `# Quick Tunnel Mode\n`;
+                envContent += `N8N_HOST=quick-tunnel\n`;
+                envContent += `WEBHOOK_URL=http://localhost\n`;
+                commands += `# 2. Start n8n with Quick Tunnel\n`;
+                commands += `docker-compose --profile quick-tunnel up -d\n\n`;
+                commands += `# 3. Get URL (after 10 seconds)\n`;
+                commands += `.\\get-url.ps1\n`;
+            } else {
+                const token = document.getElementById('cf-token').value;
+                const domain = document.getElementById('domain').value;
+
+                if (!token || !domain) {
+                    alert('⚠️ Token and Domain required! | التوكن والنطاق مطلوبان!');
+                    return;
+                }
+
+                envContent += `# Named Tunnel Mode\n`;
+                envContent += `N8N_HOST=${domain}\n`;
+                envContent += `WEBHOOK_URL=https://${domain}\n`;
+                envContent += `CLOUDFLARE_TUNNEL_TOKEN=${token}\n`;
+                commands += `# 2. Start n8n with Named Tunnel\n`;
+                commands += `docker-compose --profile named-tunnel up -d\n\n`;
+                commands += `# 3. Access at:\n`;
+                commands += `# https://${domain}\n`;
+            }
+
+            document.getElementById('env-content').textContent = envContent;
+            document.getElementById('commands').textContent = commands;
+            document.getElementById('output-section').classList.add('show');
+            document.getElementById('form-section').style.display = 'none';
+        }
+
+        function downloadEnv() {
+            const content = document.getElementById('env-content').textContent;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '.env';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('✅ تم تحميل ملف .env!\n\nضعه في نفس المجلد مع ملفات المشروع.\n\n✅ .env file downloaded!\n\nPlace it in the same folder with project files.');
+        }
+
+        function downloadStarter() {
+            const tunnelType = document.querySelector('input[name="tunnel"]:checked').value;
+            let profile = tunnelType === 'quick' ? 'quick-tunnel' : 'named-tunnel';
+
+            let starterContent = `@echo off
+REM ================================================
+REM n8n Auto Starter
+REM مشغل n8n التلقائي
+REM ================================================
+
+chcp 65001 >nul
+cls
+
+echo ============================================
+echo n8n Auto Starter
+echo مشغل n8n التلقائي
+echo ============================================
+echo.
+
+REM التحقق من Docker
+docker --version >nul 2>&1
+if errorlevel 1 (
+    echo ❌ Docker Desktop not running!
+    echo ❌ Docker Desktop غير مشغل!
+    echo.
+    echo Please start Docker Desktop first.
+    echo يرجى تشغيل Docker Desktop أولاً.
+    pause
+    exit /b 1
+)
+
+echo ✅ Docker is running
+echo.
+
+REM التحقق من ملف .env
+if not exist ".env" (
+    echo ❌ .env file not found!
+    echo ❌ ملف .env غير موجود!
+    echo.
+    echo Please place the .env file in this folder.
+    echo يرجى وضع ملف .env في هذا المجلد.
+    pause
+    exit /b 1
+)
+
+echo ✅ .env file found
+echo.
+
+REM تحميل الصور (أول مرة)
+echo 📦 Checking Docker images...
+echo 📦 التحقق من صور Docker...
+echo.
+
+docker image inspect n8nio/n8n:latest >nul 2>&1
+if errorlevel 1 (
+    echo ⬇️  Downloading n8n image (first time only)...
+    echo ⬇️  تحميل صورة n8n (أول مرة فقط)...
+    echo.
+    echo This may take 5-10 minutes...
+    echo قد يستغرق 5-10 دقائق...
+    echo.
+    docker pull n8nio/n8n:latest
+)
+
+docker image inspect cloudflare/cloudflared:latest >nul 2>&1
+if errorlevel 1 (
+    echo ⬇️  Downloading Cloudflare image (first time only)...
+    echo ⬇️  تحميل صورة Cloudflare (أول مرة فقط)...
+    echo.
+    docker pull cloudflare/cloudflared:latest
+)
+
+echo.
+echo ✅ Images ready
+echo ✅ الصور جاهزة
+echo.
+
+REM تشغيل n8n
+echo 🚀 Starting n8n...
+echo 🚀 تشغيل n8n...
+echo.
+
+docker-compose --profile ${profile} up -d
+
+if errorlevel 1 (
+    echo.
+    echo ❌ Failed to start!
+    echo ❌ فشل التشغيل!
+    pause
+    exit /b 1
+)
+
+echo.
+echo ✅ n8n started successfully!
+echo ✅ تم تشغيل n8n بنجاح!
+echo.
+
+`;
+
+            if (tunnelType === 'quick') {
+                starterContent += `echo 🔗 Getting your URL...
+echo 🔗 جاري الحصول على رابطك...
+echo.
+echo Please wait 10 seconds...
+echo يرجى الانتظار 10 ثوان...
+timeout /t 10 /nobreak >nul
+echo.
+
+powershell -ExecutionPolicy Bypass -Command "docker-compose logs cloudflared-quick-tunnel 2>&1 | Select-String -Pattern 'https://[a-zA-Z0-9.-]*\\.trycloudflare\\.com' | Select-Object -Last 1"
+
+echo.
+echo ============================================
+echo If URL not shown above, wait 10 more seconds and run:
+echo إذا لم يظهر الرابط أعلاه، انتظر 10 ثوان وشغّل:
+echo.
+echo   .\\get-url.ps1
+echo.
+`;
+            } else {
+                const domain = document.getElementById('domain').value;
+                starterContent += `echo ============================================
+echo ✅ All Done!
+echo ✅ تم بنجاح!
+echo ============================================
+echo.
+echo 🌐 Access n8n at:
+echo 🌐 افتح n8n على:
+echo.
+echo    https://${domain}
+echo.
+`;
+            }
+
+            starterContent += `echo ============================================
+echo.
+pause
+`;
+
+            const blob = new Blob([starterContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'start-n8n.bat';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('✅ تم تحميل ملف start-n8n.bat!\n\nضعه مع ملف .env ثم:\n1. انقر نقراً مزدوجاً على start-n8n.bat\n2. انتظر حتى ينتهي\n3. استمتع!\n\n✅ Downloaded start-n8n.bat!\n\nPlace it with .env then:\n1. Double-click start-n8n.bat\n2. Wait for completion\n3. Enjoy!');
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Copied! | تم النسخ!');
+            });
+        }
+    </script>
+</body>
+
+</html>
