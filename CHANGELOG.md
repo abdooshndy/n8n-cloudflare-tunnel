@@ -1,5 +1,29 @@
 # n8n with Cloudflare Tunnel - Changelog
 
+## Version 1.3.1 (2026-02-05)
+
+### 🛡️ Security Fixes (Windows)
+- **Fix:** Windows "Mark of the Web" security block for downloaded batch files.
+- **New:** `Start-n8n.bat` local launcher included in package.
+- **Change:** `setup.html` now only downloads `.env` config file (safe).
+- **Change:** Installation flow updated to be safer and more reliable.
+
+## Version 1.3.0 (2026-02-05)
+
+### 🌍 Hybrid Distribution & Web Setup
+- **New:** Browser-based setup interface (`setup.html`).
+- **New:** Hybrid Distribution System (Lite/Full editions).
+- **New:** Offline installation support with `n8n-images.tar.gz`.
+- **New:** GitHub repository integration.
+- **Improvement:** Smart `download-images` script auto-detects offline files.
+
+## Version 1.1.0 (2026-02-04)
+
+### 🎨 Windows GUI
+- **New:** PowerShell GUI (`setup-gui.ps1`).
+- **New:** `n8n-Installer.bat` wrapper.
+- **Fix:** Improved WSL detection and auto-fix.
+
 ## Version 1.0.0 (2026-02-04)
 
 ### ✨ Initial Release
