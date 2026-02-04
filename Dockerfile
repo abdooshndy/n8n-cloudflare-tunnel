@@ -11,6 +11,10 @@ COPY --from=cloudflared /usr/local/bin/cloudflared /usr/local/bin/cloudflared
 
 # Copy entrypoint script
 COPY entrypoint.sh /entrypoint.sh
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+# Fix line endings (CRLF -> LF) for Windows users using sed
+RUN sed -i 's/\r$//' /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Switch back to n8n user

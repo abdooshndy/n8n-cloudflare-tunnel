@@ -7,19 +7,31 @@ cd /d "%~dp0"
 cls
 
 echo ========================================================
-echo n8n Launcher 🚀 (Single Container Edition)
+echo n8n Launcher 🚀
 echo ========================================================
 echo.
 
+:CHECK_CONFIG
 REM 1. التحقق من ملف الإعدادات
 if not exist ".env" (
     echo ❌ Configuration file (.env) not found!
-    echo ❌ ملف الإعدادات غير موجود!
     echo.
-    echo Please run 'n8n-Installer.bat' first.
+    echo 1. Opening setup page...
+    start "" "setup.html"
+    echo.
+    echo 2. Please fill data and click "Download Configuration"
+    echo 3. Save the .env file in this folder
+    echo.
+    echo [WAITING] Waiting for .env file...
+    echo [انتظار] بانتظار تحميل ملف الإعدادات...
     echo.
     pause
-    exit /b
+    cls
+    echo ========================================================
+    echo n8n Launcher 🚀
+    echo ========================================================
+    echo.
+    goto CHECK_CONFIG
 )
 
 echo ✅ Configuration found (.env)
@@ -35,31 +47,40 @@ if errorlevel 1 (
     exit /b
 )
 
-REM 3. التعامل مع الصور (Hybrid Strategy)
+REM تحديد أمر Docker Compose المناسب (V1 vs V2)
+docker compose version >nul 2>&1
+if not errorlevel 1 (
+    set DOCKER_COMPOSE_CMD=docker compose
+) else (
+    set DOCKER_COMPOSE_CMD=docker-compose
+)
+
+echo ✅ Using: %DOCKER_COMPOSE_CMD%
+echo.
+
+REM 3. التعامل مع الصور
 echo 📦 Checking images...
 
-REM تحقق هل الصورة موجودة بالفعل؟
-docker image inspect n8n-custom:latest >nul 2>&1
+%DOCKER_COMPOSE_CMD% images -q n8n >nul 2>&1
 if errorlevel 1 (
-    echo ⚠️ Image n8n-custom:latest not found.
+    echo ⚠️ Image needs setup.
     
     if exist "n8n-images.tar.gz" (
         echo 🎉 Found offline package: n8n-images.tar.gz
         echo ⚡ Loading images locally...
         tar -xzf n8n-images.tar.gz -O | docker load
-        echo ✅ Offline images loaded.
     ) else (
         echo 🔨 Building image locally (Internet required)...
         echo This may take 5-10 minutes...
-        docker build -t n8n-custom:latest .
+        %DOCKER_COMPOSE_CMD% build --no-cache
         if errorlevel 1 (
-            echo ❌ Build failed! Please check your internet connection.
+            echo ❌ Build failed! Check internet connection.
             pause
             exit /b
         )
     )
 ) else (
-    echo ✅ Image exists.
+    echo ✅ Image ready.
 )
 
 REM 4. تشغيل الكونتينر
@@ -68,10 +89,10 @@ echo 🚀 STARTING N8N...
 echo 🚀 جاري التشغيل...
 echo.
 
-docker-compose up -d
+%DOCKER_COMPOSE_CMD% up -d
 
 if errorlevel 1 (
-    echo ❌ Error starting Docker Compose.
+    echo ❌ Error starting containers.
     pause
     exit /b
 )
@@ -79,12 +100,11 @@ if errorlevel 1 (
 echo ✅ System is running!
 echo.
 
-REM 5. عرض الرابط (للوضع المجاني)
+REM 5. عرض الرابط
 findstr /C:"N8N_HOST=quick-tunnel" .env >nul
 if not errorlevel 1 (
     echo 🔗 Getting Quick Tunnel URL...
-    echo.
-    REM ننتظر قليلاً ليقوم السكريبت الداخلي بتوليد الرابط وحفظه
+    echo Please wait...
     timeout /t 10 /nobreak >nul
     
     echo ========================================================
