@@ -1,5 +1,13 @@
 # دليل تنصيب n8n مع Cloudflare Tunnel
 
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/abdooshndy/n8n-cloudflare-tunnel)
+
+## 🔗 روابط سريعة
+- **المستودع الرسمي:** [github.com/abdooshndy/n8n-cloudflare-tunnel](https://github.com/abdooshndy/n8n-cloudflare-tunnel)
+- **التحميل (Releases):** [صفحة التحميل](https://github.com/abdooshndy/n8n-cloudflare-tunnel/releases)
+
+---
+
 ## 📋 نظرة عامة
 
 هذا المشروع يوفر إعداد كامل لتشغيل **n8n** (أداة أتمتة سير العمل) داخل Docker مع **Cloudflare Tunnel** للحصول على اتصال HTTPS آمن **بدون الحاجة لـ IP ثابت**.
