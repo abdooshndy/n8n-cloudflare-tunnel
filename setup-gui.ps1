@@ -275,11 +275,7 @@ $btnStart.Add_Click({
         return
     }
 
-    $profile = "quick-tunnel"
-    if ($radioNamed.Checked) { $profile = "named-tunnel" }
-
-    # Command to start docker-compose
-    $cmd = "docker-compose --profile $profile up -d"
+    $cmd = "docker-compose up -d"
     
     Start-Process powershell -ArgumentList "-Command", $cmd
     

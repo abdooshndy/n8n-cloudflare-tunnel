@@ -315,6 +315,10 @@
             options.forEach(opt => opt.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
 
+            // Explicitly check the radio button
+            const radio = event.currentTarget.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+
             const advanced = document.getElementById('advanced-section');
             if (type === 'named') {
                 advanced.style.display = 'block';
@@ -347,9 +351,9 @@
                 envContent += `N8N_HOST=quick-tunnel\n`;
                 envContent += `WEBHOOK_URL=http://localhost\n`;
                 commands += `# 2. Start n8n with Quick Tunnel\n`;
-                commands += `docker-compose --profile quick-tunnel up -d\n\n`;
+                commands += `docker-compose up -d\n\n`;
                 commands += `# 3. Get URL (after 10 seconds)\n`;
-                commands += `.\\get-url.ps1\n`;
+                commands += `.\\get-url.bat\n`;
             } else {
                 const token = document.getElementById('cf-token').value;
                 const domain = document.getElementById('domain').value;
@@ -364,7 +368,7 @@
                 envContent += `WEBHOOK_URL=https://${domain}\n`;
                 envContent += `CLOUDFLARE_TUNNEL_TOKEN=${token}\n`;
                 commands += `# 2. Start n8n with Named Tunnel\n`;
-                commands += `docker-compose --profile named-tunnel up -d\n\n`;
+                commands += `docker-compose up -d\n\n`;
                 commands += `# 3. Access at:\n`;
                 commands += `# https://${domain}\n`;
             }
@@ -381,7 +385,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = '.env';
+            a.download = 'n8n.env';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -395,137 +399,135 @@
             let profile = tunnelType === 'quick' ? 'quick-tunnel' : 'named-tunnel';
 
             let starterContent = `@echo off
-REM ================================================
-REM n8n Auto Starter
-REM مشغل n8n التلقائي
-REM ================================================
-
+REM ========================================================
+REM n8n One-Click Launcher
+REM ========================================================
 chcp 65001 >nul
+cd /d "%~dp0"
 cls
 
-echo ============================================
-echo n8n Auto Starter
-echo مشغل n8n التلقائي
-echo ============================================
+echo ========================================================
+echo n8n Launcher
+echo ========================================================
 echo.
 
-REM التحقق من Docker
+:CHECK_CONFIG
+REM 0. Auto-Rename Config
+if exist "n8n.env" (
+    echo [INFO] Found n8n.env, updating configuration...
+    move /Y "n8n.env" ".env" >nul
+)
+if exist "env" (
+    echo [INFO] Found env file, updating configuration...
+    move /Y "env" ".env" >nul
+)
+
+REM 1. Check Configuration
+if not exist ".env" (
+    echo [ERROR] Configuration file .env not found!
+    echo.
+    echo 1. Opening setup page...
+    start "" "setup.html"
+    echo.
+    echo 2. Please fill data and click "Download Configuration"
+    echo 3. Save the .env file in this folder
+    echo.
+    echo [WAITING] Waiting for .env file...
+    echo.
+    pause
+    cls
+    echo ========================================================
+    echo n8n Launcher
+    echo ========================================================
+    echo.
+    goto CHECK_CONFIG
+)
+
+echo [OK] Configuration found (.env)
+echo.
+
+REM 2. Check Docker
+echo [INFO] Checking Docker...
 docker --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ Docker Desktop not running!
-    echo ❌ Docker Desktop غير مشغل!
-    echo.
+    echo [ERROR] Docker Desktop is NOT running!
     echo Please start Docker Desktop first.
-    echo يرجى تشغيل Docker Desktop أولاً.
     pause
-    exit /b 1
+    exit /b
 )
 
-echo ✅ Docker is running
-echo.
-
-REM التحقق من ملف .env
-if not exist ".env" (
-    echo ❌ .env file not found!
-    echo ❌ ملف .env غير موجود!
-    echo.
-    echo Please place the .env file in this folder.
-    echo يرجى وضع ملف .env في هذا المجلد.
-    pause
-    exit /b 1
+REM Check for docker compose command (v1 vs v2)
+docker compose version >nul 2>&1
+if not errorlevel 1 (
+    set DOCKER_COMPOSE_CMD=docker compose
+) else (
+    set DOCKER_COMPOSE_CMD=docker-compose
 )
 
-echo ✅ .env file found
+echo [OK] Using: %DOCKER_COMPOSE_CMD%
 echo.
 
-REM تحميل الصور (أول مرة)
-echo 📦 Checking Docker images...
-echo 📦 التحقق من صور Docker...
-echo.
+REM 3. Check Images
+echo [INFO] Checking images...
 
-docker image inspect n8nio/n8n:latest >nul 2>&1
+%DOCKER_COMPOSE_CMD% images -q n8n >nul 2>&1
 if errorlevel 1 (
-    echo ⬇️  Downloading n8n image (first time only)...
-    echo ⬇️  تحميل صورة n8n (أول مرة فقط)...
-    echo.
-    echo This may take 5-10 minutes...
-    echo قد يستغرق 5-10 دقائق...
-    echo.
-    docker pull n8nio/n8n:latest
+    REM Image might be missing, check for offline package
+    if exist "n8n-images.tar.gz" (
+        echo [INFO] Found offline package: n8n-images.tar.gz
+        echo [INFO] Loading images locally...
+        tar -xzf n8n-images.tar.gz -O | docker load
+    ) else (
+        echo [INFO] Building image locally - Internet required...
+        echo This may take 5-10 minutes...
+        %DOCKER_COMPOSE_CMD% build --no-cache
+        if errorlevel 1 (
+            echo [ERROR] Build failed! Check internet connection.
+            pause
+            exit /b
+        )
+    )
+) else (
+    echo [OK] Image ready.
 )
 
-docker image inspect cloudflare/cloudflared:latest >nul 2>&1
-if errorlevel 1 (
-    echo ⬇️  Downloading Cloudflare image (first time only)...
-    echo ⬇️  تحميل صورة Cloudflare (أول مرة فقط)...
-    echo.
-    docker pull cloudflare/cloudflared:latest
-)
-
+REM 4. Start Container
 echo.
-echo ✅ Images ready
-echo ✅ الصور جاهزة
+echo [INFO] STARTING N8N...
 echo.
 
-REM تشغيل n8n
-echo 🚀 Starting n8n...
-echo 🚀 تشغيل n8n...
-echo.
-
-docker-compose --profile ${profile} up -d
+%DOCKER_COMPOSE_CMD% up -d
 
 if errorlevel 1 (
-    echo.
-    echo ❌ Failed to start!
-    echo ❌ فشل التشغيل!
+    echo [ERROR] Error starting containers.
     pause
-    exit /b 1
+    exit /b
+)
+
+echo [OK] System is running!
+echo.
+
+REM 5. Display URL
+findstr /C:"N8N_HOST=quick-tunnel" .env >nul
+if not errorlevel 1 (
+    echo [INFO] Getting Quick Tunnel URL...
+    echo Please wait...
+    timeout /t 10 /nobreak >nul
+    
+    echo ========================================================
+    echo 🌐 Your n8n URL:
+    echo ========================================================
+    docker logs n8n-bundled 2>&1 | findstr "https://"
+    echo ========================================================
+) else (
+    echo ========================================================
+    echo ✅ Ready! Access via your domain.
+    echo ========================================================
 )
 
 echo.
-echo ✅ n8n started successfully!
-echo ✅ تم تشغيل n8n بنجاح!
-echo.
-
-`;
-
-            if (tunnelType === 'quick') {
-                starterContent += `echo 🔗 Getting your URL...
-echo 🔗 جاري الحصول على رابطك...
-echo.
-echo Please wait 10 seconds...
-echo يرجى الانتظار 10 ثوان...
-timeout /t 10 /nobreak >nul
-echo.
-
-powershell -ExecutionPolicy Bypass -Command "docker-compose logs cloudflared-quick-tunnel 2>&1 | Select-String -Pattern 'https://[a-zA-Z0-9.-]*\\.trycloudflare\\.com' | Select-Object -Last 1"
-
-echo.
-echo ============================================
-echo If URL not shown above, wait 10 more seconds and run:
-echo إذا لم يظهر الرابط أعلاه، انتظر 10 ثوان وشغّل:
-echo.
-echo   .\\get-url.ps1
-echo.
-`;
-            } else {
-                const domain = document.getElementById('domain').value;
-                starterContent += `echo ============================================
-echo ✅ All Done!
-echo ✅ تم بنجاح!
-echo ============================================
-echo.
-echo 🌐 Access n8n at:
-echo 🌐 افتح n8n على:
-echo.
-echo    https://${domain}
-echo.
-`;
-            }
-
-            starterContent += `echo ============================================
-echo.
-pause
+echo Press any key to close...
+pause >nul
 `;
 
             const blob = new Blob([starterContent], { type: 'text/plain' });

@@ -58,9 +58,8 @@ cd n8n-cloudflare-tunnel-*
 
 ```powershell
 # 1. فك الضغط (Right Click -> Extract All)
-# 2. افتح n8n-Installer.bat
-# 3. حمّل الإعدادات (.env)
-# 4. شغّل Start-n8n.bat
+# 2. شغّل Start-n8n.bat
+# 3. اتبع التعليمات في الشاشة السوداء
 ```
 
 ---
@@ -212,21 +211,13 @@ https://n8n.yourdomain.com
 ### تشغيل الخدمات
 
 ```bash
-# Quick Tunnel
-docker-compose --profile quick-tunnel up -d
-
-# Named Tunnel
-docker-compose --profile named-tunnel up -d
+docker-compose up -d
 ```
 
 ### إيقاف الخدمات
 
 ```bash
-# Quick Tunnel
-docker-compose --profile quick-tunnel down
-
-# Named Tunnel
-docker-compose --profile named-tunnel down
+docker-compose down
 ```
 
 ### الحصول على الرابط (Quick Tunnel)

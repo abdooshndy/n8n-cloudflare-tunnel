@@ -13,7 +13,7 @@ if [ ! -z "$CLOUDFLARE_TUNNEL_TOKEN" ]; then
     
 elif [ "$N8N_HOST" = "quick-tunnel" ]; then
     echo "🔗 Starting Quick Tunnel..."
-    cloudflared tunnel --url http://localhost:5678 --no-autoupdate > /tmp/cloudflared.log 2>&1 &
+    cloudflared tunnel --url http://localhost:5678 --protocol http2 --no-autoupdate > /tmp/cloudflared.log 2>&1 &
     
     # Wait for URL generation
     sleep 5

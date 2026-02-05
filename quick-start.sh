@@ -14,9 +14,19 @@ echo ""
 # 1. Check/Build Image
 ./download-images.sh || exit 1
 
+# Check for Docker Compose V2 or V1
+if docker compose version >/dev/null 2>&1; then
+    DOCKER_COMPOSE_CMD="docker compose"
+elif command -v docker-compose >/dev/null 2>&1; then
+    DOCKER_COMPOSE_CMD="docker-compose"
+else
+    echo "❌ Docker Compose not found!"
+    exit 1
+fi
+
 echo ""
-echo "🚀 Starting Container..."
-docker-compose up -d
+echo "🚀 Starting Container using $DOCKER_COMPOSE_CMD..."
+$DOCKER_COMPOSE_CMD up -d
 
 echo ""
 echo "✅ System is running!"
