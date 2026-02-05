@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل تشغيل n8n المبسط</title>
+    <style>
+        :root {
+            --primary-color: #ea4b71; /* n8n color */
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --code-bg: #f0f0f0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 40px;
+            border-right: 5px solid var(--primary-color);
+            padding-right: 15px;
+            background: #fff0f3;
+            padding: 10px 15px 10px 0;
+            border-radius: 4px;
+        }
+        p {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        ul, ol {
+            margin-bottom: 20px;
+            padding-right: 40px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            color: #d63384;
+            font-weight: bold;
+        }
+        .img-container {
+            background: #f4f4f4;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            color: #666;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .note {
+            background-color: #e7f5ff;
+            border-right: 5px solid #228be6;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.9em;
+            color: #888;
+        }
+        @media print {
+            body { background: white; }
+            .container { box-shadow: none; padding: 0; }
+        }
+        .btn-print {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 20px auto;
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn-print:hover { background: #555; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div onclick="window.print()" class="btn-print">🖨️ طباعة الدليل (PDF)</div>
+
+    <h1>🚀 دليل تشغيل n8n المبسط</h1>
+
+    <p style="text-align: center; font-size: 1.2em;">
+        مرحباً بك! هذا الدليل سيشرح لك كيف تشغل n8n خطوة بخطوة بأبسط طريقة ممكنة.<br>
+        لقد صممنا هذا النظام ليكون <strong>"شغّل واستخدم" (Plug & Play)</strong>.
+    </p>
+
+    <!-- Step 1 -->
+    <h2>📥 الخطوة الأولى: التجهيز</h2>
+    <ol>
+        <li><strong>حمل الملف المضغوط</strong> (يفضل النسخة الكاملة Full لتعمل بدون إنترنت).</li>
+        <li><strong>فك الضغط</strong> في أي مكان (سطح المكتب مثلاً).</li>
+        <li><strong>تأكد أن Docker Desktop يعمل</strong> (الأيقونة خضراء في الأسفل).</li>
+    </ol>
+    <div class="img-container">
+        <!-- Placeholder Image -->
+        <img src="images/step1-extract.png" alt="صورة توضيحية لفك الضغط" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+        <div style="display:none; padding: 20px;">
+            📸 <strong>مكان الصورة:</strong> ضع صورة باسم <code>step1-extract.png</code> في مجلد images
+        </div>
+    </div>
+
+    <!-- Step 2 -->
+    <h2>🛠️ الخطوة الثانية: الإعداد (مرة واحدة)</h2>
+    <ol>
+        <li>ادخل للمجلد وشغل ملف <code>Start-n8n.bat</code>.</li>
+        <li>إذا كان أول تشغيل، ستفتح لك صفحة في المتصفح تلقائياً.</li>
+    </ol>
+    <div class="img-container">
+        <img src="images/step2-browser.png" alt="صفحة الإعداد" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+        <div style="display:none; padding: 20px;">
+            📸 <strong>مكان الصورة:</strong> ضع صورة باسم <code>step2-browser.png</code> في مجلد images
+        </div>
+    </div>
+    <ol start="3">
+        <li>في الصفحة:
+            <ul>
+                <li>اكتب اسم مستخدم وكلمة مرور (احفظهم جيداً!).</li>
+                <li>اختر نوع الاتصال (Quick or Named).</li>
+                <li>اضغط <strong>Generate</strong>.</li>
+                <li>ثم اضغط <strong>Download Configuration</strong>.</li>
+            </ul>
+        </li>
+        <li>احفظ الملف الناتج (<code>.env</code>) في <strong>نفس المجلد</strong>.</li>
+    </ol>
+    <div class="img-container">
+        <img src="images/step3-save-env.png" alt="حفظ ملف .env" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+        <div style="display:none; padding: 20px;">
+            📸 <strong>مكان الصورة:</strong> ضع صورة باسم <code>step3-save-env.png</code> في مجلد images
+        </div>
+    </div>
+
+    <!-- Step 3 -->
+    <h2>🚦 الخطوة الثالثة: التشغيل</h2>
+    <ol>
+        <li>ارجع للمجلد وشغل <code>Start-n8n.bat</code> مرة أخرى.</li>
+        <li>ستظهر شاشة سوداء تبدأ بتحميل النظام.</li>
+        <li>انتظر حتى تظهر رسالة: <strong>"System is running!"</strong>.</li>
+    </ol>
+    <div class="img-container">
+        <img src="images/step4-console.png" alt="الشاشة السوداء" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+        <div style="display:none; padding: 20px;">
+            📸 <strong>مكان الصورة:</strong> ضع صورة باسم <code>step4-console.png</code> في مجلد images
+        </div>
+    </div>
+
+    <!-- Step 4 -->
+    <h2>🌐 الخطوة الرابعة: كيف تدخل للبرنامج؟</h2>
+    <p>عندما تنتهي الشاشة السوداء من العمل، ستعطيك الرابط في الأسفل.</p>
+
+    <div class="note">
+        <h3>1️⃣ الطريقة الأولى: Quick Tunnel (المجاني)</h3>
+        <p>إذا اخترت هذا الخيار، سيظهر لك رابط عشوائي مثل:<br>
+        <span style="color:#228be6; font-weight:bold;">https://green-apple-123.trycloudflare.com</span></p>
+        <ul>
+            <li><strong>الميزة:</strong> مجاني 100% ولا يحتاج إعدادات.</li>
+            <li><strong>العيب:</strong> الرابط يتغير إذا أعدت تشغيل الجهاز.</li>
+        </ul>
+    </div>
+
+    <div class="img-container">
+        <img src="images/step5-quick-url.png" alt="الرابط في الشاشة" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+        <div style="display:none; padding: 20px;">
+            📸 <strong>مكان الصورة:</strong> ضع صورة باسم <code>step5-quick-url.png</code> في مجلد images
+        </div>
+    </div>
+
+    <div class="note" style="background-color: #fff3cd; border-color: #ffc107;">
+        <h3>2️⃣ الطريقة الثانية: Named Tunnel (الاحترافي)</h3>
+        <p>إذا كان لديك نطاق (Domain)، سيظهر الرابط الثابت الخاص بك:<br>
+        <span style="color:#d63384; font-weight:bold;">https://n8n.yourdomain.com</span></p>
+        <ul>
+            <li><strong>الميزة:</strong> الرابط ثابت دائماً.</li>
+            <li><strong>العيب:</strong> تحتاج لشراء نطاق وحساب Cloudflare.</li>
+        </ul>
+    </div>
+
+    <!-- FAQ -->
+    <h2>❓ أسئلة متكررة</h2>
+    <ul>
+        <li>
+            <strong>كيف أحصل على الرابط مرة أخرى؟</strong><br>
+            فقط شغل <code>Start-n8n.bat</code> مرة أخرى، وسيعطيك الرابط فوراً.
+        </li>
+        <li>
+            <strong>كيف أوقف البرنامج؟</strong><br>
+            فقط أغلق الشاشة السوداء.
+        </li>
+    </ul>
+
+    <div class="footer">
+        <hr>
+        <p>صُنع بكل حب ❤️ لتسهيل n8n</p>
+    </div>
+</div>
+
+</body>
+</html>
